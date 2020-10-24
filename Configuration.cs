@@ -14,8 +14,19 @@ namespace DalamudPluginProjectTemplatePython
 
         [JsonIgnore] private DalamudPluginInterface pluginInterface;
 
-        public void SetProperty(string key, string value) => Properties[key] = value;
-        public void DeleteProperty(string key) => Properties.Remove(key);
+        // ReSharper disable once UnusedMember.Global
+        public void SetProperty(string key, string value)
+        {
+            Properties[key] = value;
+            Save();
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public void DeleteProperty(string key)
+        {
+            Properties.Remove(key);
+            Save();
+        }
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
