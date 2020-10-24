@@ -11,7 +11,7 @@ namespace DalamudPluginProjectTemplatePython
     {
         public string Name => "Your Plugin's Display Name";
 
-        private ScriptRuntime runtime;
+        private ScriptEngine engine;
 
         private Configuration config;
         private DalamudPluginInterface pluginInterface;
@@ -22,15 +22,26 @@ namespace DalamudPluginProjectTemplatePython
             this.config = (Configuration)this.pluginInterface.GetPluginConfig() ?? new Configuration();
             this.config.Initialize(pluginInterface);
 
-            this.runtime = Python.CreateRuntime(AppDomain.CurrentDomain);
-            
-            Execute("plugin.py");
+            this.engine = Python.CreateEngine(AppDomain.CurrentDomain);
+
+            var scope = ConfigureScope();
+            Execute("plugin.py", scope);
         }
 
-        private void Execute(string scriptFile)
+        private ScriptScope ConfigureScope()
+        {
+            var scope = this.engine.CreateScope();
+
+            scope.SetVariable("Configuration", this.config);
+            scope.SetVariable("PluginInterface", this.pluginInterface);
+
+            return scope;
+        }
+
+        private void Execute(string scriptFile, ScriptScope scope)
         {
             var filePath = GetRelativeFile(scriptFile);
-            this.runtime.ExecuteFile(filePath);
+            this.engine.ExecuteFile(filePath, scope);
         }
 
         private static string GetRelativeFile(string fileName)
@@ -43,7 +54,6 @@ namespace DalamudPluginProjectTemplatePython
         {
             if (!disposing) return;
 
-            this.runtime.Shutdown();
             this.config.Save();
             this.pluginInterface.Dispose();
         }

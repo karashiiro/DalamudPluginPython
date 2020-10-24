@@ -1,6 +1,3 @@
-﻿import clr
-clr.AddReference("Dalamud")
-
-from Dalamud.Plugin import PluginLog
-
-PluginLog.Log("Hello from IronPython!")
+﻿chat = PluginInterface.Framework.Gui.Chat
+world = PluginInterface.ClientState.LocalPlayer.CurrentWorld.GameData
+chat.Print("Hello " + world.Name + "!")
