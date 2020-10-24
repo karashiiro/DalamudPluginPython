@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Dalamud.Game.Command;
 using Dalamud.Plugin;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -19,13 +20,14 @@ namespace DalamudPluginProjectTemplatePython
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
             this.pluginInterface = pluginInterface;
+
             this.config = (Configuration)this.pluginInterface.GetPluginConfig() ?? new Configuration();
             this.config.Initialize(pluginInterface);
 
             this.engine = Python.CreateEngine(AppDomain.CurrentDomain);
 
-            var scope = ConfigureScope();
-            Execute("plugin.py", scope);
+            var scriptScope = ConfigureScope();
+            Execute("plugin.py", scriptScope);
         }
 
         private ScriptScope ConfigureScope()
@@ -41,7 +43,10 @@ namespace DalamudPluginProjectTemplatePython
         private void Execute(string scriptFile, ScriptScope scope)
         {
             var filePath = GetRelativeFile(scriptFile);
-            this.engine.ExecuteFile(filePath, scope);
+            var newScope = this.engine.ExecuteFile(filePath, scope);
+
+            var command = newScope.GetVariable<CommandInfo.HandlerDelegate>("command_1");
+            this.pluginInterface.CommandManager.AddHandler("/example1", new CommandInfo(command));
         }
 
         private static string GetRelativeFile(string fileName)
@@ -55,6 +60,7 @@ namespace DalamudPluginProjectTemplatePython
             if (!disposing) return;
 
             this.config.Save();
+            this.pluginInterface.CommandManager.RemoveHandler("/example1");
             this.pluginInterface.Dispose();
         }
 
