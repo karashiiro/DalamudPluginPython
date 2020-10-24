@@ -6,13 +6,7 @@ from System.Collections.Generic import List
 from Dalamud.Game.Command import CommandInfo
 from Dalamud.Plugin import PluginLog
 
-class InteropCommand:
-	def __init__(self, name=None, aliases=[], help_message="", show_in_help=True, command=None):
-		self.Name = name
-		self.Aliases = aliases
-		self.HelpMessage = help_message
-		self.ShowInHelp = show_in_help
-		self.Command = command
+from interop_command import InteropCommand
 
 def example_command_1(command, args):
 	chat = PluginInterface.Framework.Gui.Chat

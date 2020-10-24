@@ -26,6 +26,7 @@ namespace DalamudPluginProjectTemplatePython
             this.config.Initialize(pluginInterface);
 
             this.engine = Python.CreateEngine(AppDomain.CurrentDomain);
+            ConfigureSearchPaths();
 
             this.commandManager = new InteropCommandManager(pluginInterface);
 
@@ -41,6 +42,14 @@ namespace DalamudPluginProjectTemplatePython
             scope.SetVariable("PluginInterface", this.pluginInterface);
 
             return scope;
+        }
+
+        private void ConfigureSearchPaths()
+        {
+            var dir = Path.Combine(Assembly.GetExecutingAssembly().Location, "..");
+            var paths = this.engine.GetSearchPaths();
+            paths.Add(dir);
+            this.engine.SetSearchPaths(paths);
         }
 
         private void Execute(string scriptFile, ScriptScope scope)

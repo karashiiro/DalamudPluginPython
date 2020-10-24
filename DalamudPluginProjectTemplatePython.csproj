@@ -59,6 +59,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="interop_command.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
