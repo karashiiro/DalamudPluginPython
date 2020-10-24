@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Dalamud.Game.Command;
 using Dalamud.Plugin;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -16,6 +16,7 @@ namespace DalamudPluginProjectTemplatePython
 
         private Configuration config;
         private DalamudPluginInterface pluginInterface;
+        private InteropCommandManager commandManager;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {
@@ -25,6 +26,8 @@ namespace DalamudPluginProjectTemplatePython
             this.config.Initialize(pluginInterface);
 
             this.engine = Python.CreateEngine(AppDomain.CurrentDomain);
+
+            this.commandManager = new InteropCommandManager(pluginInterface);
 
             var scriptScope = ConfigureScope();
             Execute("plugin.py", scriptScope);
@@ -43,10 +46,10 @@ namespace DalamudPluginProjectTemplatePython
         private void Execute(string scriptFile, ScriptScope scope)
         {
             var filePath = GetRelativeFile(scriptFile);
-            var newScope = this.engine.ExecuteFile(filePath, scope);
+            this.engine.ExecuteFile(filePath, scope);
 
-            var command = newScope.GetVariable<CommandInfo.HandlerDelegate>("command_1");
-            this.pluginInterface.CommandManager.AddHandler("/example1", new CommandInfo(command));
+            IList<dynamic> commands = scope.GetVariable("commands");
+            this.commandManager.Install(commands);
         }
 
         private static string GetRelativeFile(string fileName)
@@ -60,7 +63,7 @@ namespace DalamudPluginProjectTemplatePython
             if (!disposing) return;
 
             this.config.Save();
-            this.pluginInterface.CommandManager.RemoveHandler("/example1");
+            this.commandManager.Uninstall();
             this.pluginInterface.Dispose();
         }
 

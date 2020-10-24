@@ -48,6 +48,7 @@
       <HintPath Condition="Exists('..\..\Dalamud\Dalamud\bin\Debug')">..\..\Dalamud\Dalamud\bin\Debug\Lumina.Generated.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath Condition="Exists('$(AppData)\XIVLauncher\addon\Hooks')">$(AppData)\XIVLauncher\addon\Hooks\Newtonsoft.Json.dll</HintPath>
       <HintPath Condition="Exists('$(DalamudHooks)')">$(DalamudHooks)\Newtonsoft.Json.dll</HintPath>
