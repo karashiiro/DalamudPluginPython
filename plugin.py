@@ -8,6 +8,9 @@ from Dalamud.Plugin import PluginLog
 
 from interop_command import InteropCommand
 
+# Configuration can be set with Configuration.SetProperty(key: str, value: str)
+# and accessed with Configuration.GetProperty(key: str): str.
+
 def example_command_1(command, args):
 	chat = PluginInterface.Framework.Gui.Chat
 	world = PluginInterface.ClientState.LocalPlayer.CurrentWorld.GameData
