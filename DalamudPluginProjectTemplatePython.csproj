@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IronPython" Version="2.7.10" />
+    <PackageReference Include="DalamudPackager" Version="1.0.1" />
+    <PackageReference Include="IronPython" Version="2.7.11" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,9 +60,6 @@
 
   <ItemGroup>
     <None Update="interop_command.py">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="plugin.py">
