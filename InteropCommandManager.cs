@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.Command;
-using Dalamud.Plugin;
 using System.Collections.Generic;
 
 namespace DalamudPluginProjectTemplatePython
@@ -8,11 +7,11 @@ namespace DalamudPluginProjectTemplatePython
     {
         private IList<dynamic> commands;
 
-        private readonly DalamudPluginInterface pluginInterface;
+        private readonly CommandManager commandManager;
 
-        public InteropCommandManager(DalamudPluginInterface pluginInterface)
+        public InteropCommandManager(CommandManager commandManager)
         {
-            this.pluginInterface = pluginInterface;
+            this.commandManager = commandManager;
         }
 
         public void Install(IList<dynamic> commands)
@@ -28,11 +27,11 @@ namespace DalamudPluginProjectTemplatePython
                     ShowInHelp = command.ShowInHelp,
                 };
 
-                this.pluginInterface.CommandManager.AddHandler(command.Name, commandInfo);
+                this.commandManager.AddHandler(command.Name, commandInfo);
 
                 foreach (var alias in command.Aliases)
                 {
-                    this.pluginInterface.CommandManager.AddHandler(alias, commandInfo);
+                    this.commandManager.AddHandler(alias, commandInfo);
                 }
             }
         }
@@ -41,11 +40,11 @@ namespace DalamudPluginProjectTemplatePython
         {
             foreach (var command in this.commands)
             {
-                this.pluginInterface.CommandManager.RemoveHandler(command.Name);
+                this.commandManager.RemoveHandler(command.Name);
 
                 foreach (var alias in command.Aliases)
                 {
-                    this.pluginInterface.CommandManager.RemoveHandler(alias);
+                    this.commandManager.RemoveHandler(alias);
                 }
             }
         }

@@ -12,9 +12,8 @@ from interop_command import InteropCommand
 # and accessed with Configuration.GetProperty(key: str): str.
 
 def example_command_1(command, args):
-	chat = PluginInterface.Framework.Gui.Chat
-	world = PluginInterface.ClientState.LocalPlayer.CurrentWorld.GameData
-	chat.Print("Hello " + world.Name + "!")
+	world = ClientState.LocalPlayer.CurrentWorld.GameData
+	Chat.Print("Hello, " + world.Name + "!")
 command1 = InteropCommand(
 	name="/example1",
 	aliases=["/ex1"],

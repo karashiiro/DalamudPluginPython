@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.Command;
+using Dalamud.Game.Gui;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
@@ -10,25 +14,38 @@ namespace DalamudPluginProjectTemplatePython
 {
     public class Plugin : IDalamudPlugin
     {
+        [PluginService]
+        [RequiredVersion("1.0")]
+        private DalamudPluginInterface PluginInterface { get; init; }
+
+        [PluginService]
+        [RequiredVersion("1.0")]
+        private CommandManager Commands { get; init; }
+
+        [PluginService]
+        [RequiredVersion("1.0")]
+        private ChatGui Chat { get; init; }
+
+        [PluginService]
+        [RequiredVersion("1.0")]
+        private ClientState ClientState { get; init; }
+
         public string Name => "Your Plugin's Display Name";
 
-        private ScriptEngine engine;
+        private readonly ScriptEngine engine;
 
-        private Configuration config;
-        private DalamudPluginInterface pluginInterface;
-        private InteropCommandManager commandManager;
+        private readonly Configuration config;
+        private readonly InteropCommandManager commandManager;
 
-        public void Initialize(DalamudPluginInterface pluginInterface)
+        public Plugin()
         {
-            this.pluginInterface = pluginInterface;
+            this.config = (Configuration)PluginInterface.GetPluginConfig() ?? new Configuration();
+            this.config.Initialize(PluginInterface);
 
-            this.config = (Configuration)this.pluginInterface.GetPluginConfig() ?? new Configuration();
-            this.config.Initialize(pluginInterface);
-
-            this.engine = Python.CreateEngine(AppDomain.CurrentDomain);
+            this.engine = Python.CreateEngine();
             ConfigureSearchPaths();
 
-            this.commandManager = new InteropCommandManager(pluginInterface);
+            this.commandManager = new InteropCommandManager(Commands);
 
             var scriptScope = ConfigureScope();
             Execute("plugin.py", scriptScope);
@@ -39,7 +56,9 @@ namespace DalamudPluginProjectTemplatePython
             var scope = this.engine.CreateScope();
 
             scope.SetVariable("Configuration", this.config);
-            scope.SetVariable("PluginInterface", this.pluginInterface);
+            scope.SetVariable("PluginInterface", PluginInterface);
+            scope.SetVariable("Chat", Chat);
+            scope.SetVariable("ClientState", ClientState);
 
             return scope;
         }
@@ -73,7 +92,7 @@ namespace DalamudPluginProjectTemplatePython
 
             this.config.Save();
             this.commandManager.Uninstall();
-            this.pluginInterface.Dispose();
+            PluginInterface.Dispose();
         }
 
         public void Dispose()

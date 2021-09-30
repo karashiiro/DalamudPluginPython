@@ -5,6 +5,10 @@ Install IronPython.StdLib separately via NuGet.
 
 When adding additional Python source files, be sure to enable the "Copy to Output Directory" setting on each new file.
 
+## Hint paths
+The project file includes hint paths for the dependencies, which are set up to not include much information about the developer's filesystem.
+You may need to adjust these paths yourself, if they don't represent your development environment.
+
 ## GitHub Actions
 Running the shell script `DownloadGithubActions.sh` will download some useful GitHub actions for you. You can also delete this file if you have no need for it.
 
