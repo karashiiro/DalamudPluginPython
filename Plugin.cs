@@ -92,7 +92,6 @@ namespace DalamudPluginProjectTemplatePython
 
             this.config.Save();
             this.commandManager.Uninstall();
-            PluginInterface.Dispose();
         }
 
         public void Dispose()
